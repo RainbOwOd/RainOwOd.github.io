@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- import CSS -->
+  <title>斩风DPS计算小工具</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <style>
+    .el-alert__content{
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body style="padding:0;margin:0;">
+  <div id="app">
+      <el-alert
+    title=""
+    type="success"
+    :closable="false">
+  </el-alert>
+        <el-card class="box-card" style="width: 500px;margin: 100px auto 0;padding-top: 20px;">
+        <el-form label-position="right" label-width="100px" :model="f">
+        <el-form-item label="流派">
+            <el-select v-model="value" placeholder="请选择" style="width: 100%;">
+                <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                    :disabled="item.disabled">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="物理攻击">
+          <el-input v-model="f.B5"></el-input>
+        </el-form-item>
+        <el-form-item label="物理强度">
+          <el-input v-model="f.C5"></el-input>
+        </el-form-item>
+        <el-form-item label="专精掌握">
+          <el-input v-model="f.D5"></el-input>
+        </el-form-item>
+        <el-form-item label="会心率">
+            <el-input v-model="f.E5"><template slot="append">%</template></el-input>
+        </el-form-item>
+        <el-form-item label="攻击专注率">
+            <el-input v-model="f.F5"><template slot="append">%</template></el-input>
+        </el-form-item>
+      </el-form>
+        <div class="result" style="width: 100%;height: 100px;font-size: 45px;text-align: center;line-height: 100px;color: #94d4cb;">{{result}}</div>
+        </el-card>
+  </div>
+</body>
+  <!-- import Vue before Element -->
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <!-- import JavaScript -->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {
+            value: '0',
+            options: [
+                {
+                value: '0',//序号，新增流派时请按顺序写
+                label: '纯影',//流派名
+                XS:[0.76612, 1.11708, 2.1592599999999997]//系数
+                }, {
+                value: '1',
+                label: '混合双开',
+                XS:[1.90674, 0.5671, 1.44129]
+                }, {
+                value: '2',
+                label: '混合单开',
+                disabled: true//如果不可用
+                }
+            ],
+            f: {
+                B5: '',
+                C5: '',
+                D5: '',
+                E5: '',
+                F5: ''
+            }
+        }
+      },
+      computed:{
+        result(){
+            let F5 = this.f.F5>100?100:this.f.F5
+            return ((X1,X2,X3)=>(((this.f.B5*1*(1+(this.f.C5*1/17)/100))*(1+(this.f.D5*1/15.18)/100)*this.f.E5/100*1.6*F5/100+(this.f.B5*1*(1+(this.f.C5*1/17)/100))*(1+(this.f.D5*1/15.17)/100)*(1-this.f.E5/100)*1*F5/100+(this.f.B5*1*(1+(this.f.C5*1/17)/100))*(1+(this.f.D5*1/15.17)/100)*(1-F5/100)*0.3)*X1+((this.f.B5*1*(1+(this.f.C5*1/17)/100))*(1+(this.f.D5*1/8.73)/100)*this.f.E5/100*1.6*F5/100+(this.f.B5*1*(1+(this.f.C5*1/17)/100))*(1+(this.f.D5*1/8.73)/100)*(1-this.f.E5/100)*1*F5/100+(this.f.B5*1*(1+(this.f.C5*1/17)/100))*(1+(this.f.D5*1/8.73)/100)*(1-F5/100)*0.3)*X2+((this.f.B5*1*(1+(this.f.C5*1/17)/100))*this.f.E5/100*1.6*F5/100+(this.f.B5*1*(1+(this.f.C5*1/17)/100))*(1-this.f.E5/100)*1*F5/100+(this.f.B5*1*(1+(this.f.C5*1/17)/100))*(1-F5/100)*0.3)*X3).toFixed(1)*1)(...this.options[this.value].XS)
+        }
+      }
+    })
+  </script>
+</html>
